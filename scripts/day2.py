@@ -55,7 +55,7 @@ def puzzle_two():
 	print(answer)
 
 
-if(args.puzzle == 1):
+if args.puzzle == 1:
 	puzzle_one()
 else:
 	puzzle_two()
