@@ -9,26 +9,8 @@ parser.add_argument('--puzzle', type=int, choices=[1,2], help='solve puzzle 1 or
 
 args = parser.parse_args()
 
-# # define iterator class
-# class IterBoard:
-# 	def __init__(self, board):
-# 		self._board = board
-# 		self._index = -1
-
-# 	def __next__(self):
-# 		self._index += 1
-# 		if self._index >= len(self._board):
-# 			self._index = -1
-# 			raise StopIteraction
-# 		else:
-# 			return self._board[self._index]
-
 # define a bingo board class
 class BingoBoard:
-
-	# # return iterator object to make class iterable
-	# def __iter__(self):
-	# 	return IterBoard(self)
 
 	# initialize board as array
 	def __init__(self, data):
@@ -78,7 +60,6 @@ with open(args.infile) as file:
 # convert draw pool to list of int
 draw_pool = draw_pool.split(',')
 draw_pool = list(map(int, draw_pool))
-print(draw_pool)
 
 # initialize list of boards
 boards = []
@@ -135,7 +116,6 @@ if args.puzzle == 1:
 
 
 			if b.winner:
-				print('found winner')
 				unmarked_sum = sum(b.get_unmarked())
 				found_winner = True
 				break
@@ -167,7 +147,6 @@ if args.puzzle == 2:
 					winning_boards.append(i)
 
 				if len(winning_boards) == len(game):
-					print('last board completed')
 					unmarked_sum = sum(b.get_unmarked())
 					break
 			
