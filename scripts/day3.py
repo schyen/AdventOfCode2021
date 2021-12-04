@@ -5,7 +5,7 @@ import argparse
 from collections import Counter
 
 # set up arguments
-parser = argparse.ArgumentParser(description='Advent of Code 2021 Day 1 puzzle')
+parser = argparse.ArgumentParser(description='Advent of Code 2021 Day 3 puzzle')
 parser.add_argument('infile', type=str, help='data input file')
 parser.add_argument('--puzzle', type=int, choices=[1,2], help='solve puzzle 1 or puzzle 2')
 
