@@ -146,7 +146,7 @@ while True:
         candidate_caves = [cave for cave in cave_system if cave.name in curr_cave.connect]
         if puzzle == 1:
             connecting_caves = valid_cave(curr_path, candidate_caves)
-        if puzzle == 2:
+        if puzzle == 2: ## this to 2 days to run so not a great solution
             connecting_caves = valid_cave2(curr_path, candidate_caves)
         
         # for each connecting path, initiate new path
