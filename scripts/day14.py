@@ -10,8 +10,8 @@ import timeit
 
 # args = parser.parse_args()
 
-infile = "data/d14_test.txt"
-puzzle = 0
+infile = "data/d14_input.txt"
+puzzle = 2
 
 # infile = args.infile
 # puzzle = args.puzzle
@@ -80,7 +80,6 @@ def extend_polymer(template):
 if puzzle == 1:
     start = timeit.default_timer()
     for step in range(0,10):
-        print(step)
         template = extend_polymer(template)
 
     polymer = template
@@ -93,9 +92,9 @@ if puzzle == 1:
 
     answer = max_monomer - min_monomer
 
-    stop = timeit.default_timer()
     print('answer is:')
     print(answer)
+    stop = timeit.default_timer()
     print('Time: ', stop - start)
 
 # how long will the polymer be after 40 steps
@@ -106,7 +105,71 @@ def polymer_length(n, step=0):
         step = step + 1
         n = (n - 1) + n
         return polymer_length(n, step)
-poly_len = polymer_length(4, 0)
-print(poly_len) # 3.2 trillion :(
+
+if puzzle == 0:
+    poly_len = polymer_length(4, 0)
+    print(poly_len) # 3.2 trillion :(
 
 # solution not scalable. try new approach for puzzle 2.
+# it's ten times faster!
+
+# function to identify monomers to insert and the number of times to insert them
+def indentify_insert(pair_tally):
+    insert_tally = Counter({})
+    for pair in pair_tally.keys():
+        insert = rules.get(pair)
+        if insert_tally.get(insert) is None:
+            insert_tally[insert] = pair_tally.get(pair)
+        else:
+            insert_tally[insert] = insert_tally.get(insert) + pair_tally.get(pair)
+    return insert_tally
+
+# function to build new set of pairs from pairs tally
+def build_pairs(pair_tally):
+    new_pairs = Counter({})
+    for pair in pair_tally.keys():
+        # find corresponding insertion
+        insert = rules.get(pair)
+        one = pair[0] + insert
+        two = insert + pair[1]
+        if new_pairs.get(one) is None:
+            new_pairs[one] = pair_tally.get(pair)
+        else:
+            new_pairs[one] = new_pairs.get(one) + pair_tally.get(pair)
+        if new_pairs.get(two) is None:
+            new_pairs[two] = pair_tally.get(pair)
+        else:
+            new_pairs[two] = new_pairs.get(two) + pair_tally.get(pair)
+
+    return new_pairs
+
+if puzzle == 2:
+    start = timeit.default_timer()
+    # first find pairs in template
+    pairs = locate_pairs(template) # [NN, NC, CH]
+    pair_tally = Counter(pairs) # [NN:1, NC:1, CH:1]
+
+    # initiate counter of template
+    monomer_count = Counter(template) # [N:2, C:1, H1]
+
+    for step in range(0,40):
+        # identify monomers to be inserted
+        insert_tally = indentify_insert(pair_tally) # [B:1, C:1, H:1]
+
+        # update counter
+        monomer_count = monomer_count + insert_tally
+
+        # build new pair tally
+        pair_tally = build_pairs(pair_tally) # [NB:1, BN:1, NC:1, CC:1, CH:1, HH:1]
+
+    monomer_order = monomer_count.most_common()
+    # get most and least common monomer
+    max_monomer = monomer_order[0][1]
+    min_monomer = monomer_order[-1][1]
+
+    answer = max_monomer - min_monomer
+
+    stop = timeit.default_timer()
+    print('answer is:')
+    print(answer)
+    print('Time: ', stop - start) 
